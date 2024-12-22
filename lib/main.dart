@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:memo_app/src/screens/create_idea.dart';
-import 'package:memo_app/src/screens/ideas.dart';
-import 'src/screens/home.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'src/logger.dart';
+import 'src/ui/recording/recording_page.dart';
+import 'src/ui/home/home_page.dart';
+import 'src/ui/vault/vault_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ProviderScope(
+      observers: [Logger()],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -20,8 +28,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (BuildContext context) => HomePage(),
-        '/create': (BuildContext context) => CreateIdeaPage(),
-        '/ideas': (BuildContext context) => IdeasPage() 
+        '/create': (BuildContext context) => RecordingPage(),
+        '/ideas': (BuildContext context) => VaultPage()
       },
     );
   }

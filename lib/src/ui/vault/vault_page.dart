@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class IdeasPage extends StatelessWidget {
-  const IdeasPage({super.key});
+class VaultPage extends StatelessWidget {
+  const VaultPage({super.key});
 
   @override
   Widget build(BuildContext context) {
