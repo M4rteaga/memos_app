@@ -23,7 +23,7 @@ class RecordingPage extends ConsumerWidget {
             Text('Start recording'),
             switch (asyncState) {
               AsyncData state => switch (state.value) {
-                  RecordingState.non => RecordingButtons.record(
+                  RecordingState.none => RecordingButtons.record(
                       onRecordPressed: () => ref
                           .read(recordingNotifierProvider.notifier)
                           .startRecording(),
@@ -32,20 +32,22 @@ class RecordingPage extends ConsumerWidget {
                       onPausePressed: () => ref
                           .read(recordingNotifierProvider.notifier)
                           .pauseRecording(),
-                      onDeletePressed: () => ref
-                          .read(recordingNotifierProvider.notifier)
-                          .stopRecording(),
+                      onDeletePressed: () => {}, //TODO: add method
                       onStopPressed: () => ref
                           .read(recordingNotifierProvider.notifier)
                           .stopRecording(),
                     ),
-                  // RecordingState.paused => TextButton(
-                  //     onPressed: () => {},
-                  //     child: Icon(
-                  //       Icons.play_arrow,
-                  //       color: Colors.black12,
-                  //       size: 46,
-                  //     )),
+                  RecordingState.paused => RecordingButtons.paused(
+                      onResumePressed: () => ref
+                          .read(recordingNotifierProvider.notifier)
+                          .resumeRecording(),
+                      onDeletePressed: () => ref
+                          .read(recordingNotifierProvider.notifier)
+                          .stopRecording(), //TODO: add method
+                      onStopPressed: () => ref
+                          .read(recordingNotifierProvider.notifier)
+                          .stopRecording(),
+                    ),
                   _ => SizedBox(),
                 },
               _ => SizedBox(),

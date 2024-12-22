@@ -13,7 +13,7 @@ part 'recording_controller.g.dart';
 /// Pause, recording stops but the user can continue recording
 /// end, the user ends the recording
 enum RecordingState {
-  non,
+  none,
   recording,
   paused,
   finish,
@@ -33,7 +33,7 @@ class RecordingNotifier extends _$RecordingNotifier {
 
       await _initializeAudioSession();
     }
-    return RecordingState.non;
+    return RecordingState.none;
   }
 
   Future<void> _initializeAudioSession() async {
@@ -76,11 +76,25 @@ class RecordingNotifier extends _$RecordingNotifier {
   }
 
   Future<void> pauseRecording() async {
-    await _record.cancel();
+    await _record.pause();
+
+    state = AsyncValue.data(RecordingState.paused);
+  }
+
+  Future<void> resumeRecording() async {
+    if(await _record.isPaused()){
+      await _record.resume();
+    }
+
     state = AsyncValue.data(RecordingState.recording);
   }
 
   Future<void> stopRecording() async {
-    state = AsyncValue.data(RecordingState.recording);
+    final nose = await _record.stop();
+    
+    await _record.dispose();
+
+    print("este es el nose $nose");
+    state = AsyncValue.data(RecordingState.none);
   }
 }

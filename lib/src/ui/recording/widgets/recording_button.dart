@@ -9,20 +9,20 @@ class RecordingButtons extends StatelessWidget {
     this.onPausePressed,
     this.onDeletePressed,
     this.onStopPressed,
-    this.onPlayPressed,
+    this.onResumePressed,
   });
   final RecordingState recordingState;
   final VoidCallback? onRecordPressed;
   final VoidCallback? onPausePressed;
   final VoidCallback? onDeletePressed;
   final VoidCallback? onStopPressed;
-  final VoidCallback? onPlayPressed;
+  final VoidCallback? onResumePressed;
 
   factory RecordingButtons.record({
     required onRecordPressed,
   }) {
     return RecordingButtons(
-        onRecordPressed: onRecordPressed, recordingState: RecordingState.non);
+        onRecordPressed: onRecordPressed, recordingState: RecordingState.none);
   }
 
   factory RecordingButtons.recording({
@@ -32,23 +32,28 @@ class RecordingButtons extends StatelessWidget {
   }) {
     return RecordingButtons(
         onPausePressed: onPausePressed,
-        onDeletePressed: onPausePressed,
+        onDeletePressed: onDeletePressed,
         onStopPressed: onStopPressed,
         recordingState: RecordingState.recording);
   }
 
   factory RecordingButtons.paused({
-    required onPlayPressed,
+    required onResumePressed,
+    required onDeletePressed,
+    required onStopPressed,
   }) {
     return RecordingButtons(
-        onPlayPressed: onPlayPressed,
-        recordingState: RecordingState.paused);
+      onResumePressed: onResumePressed,
+      onDeletePressed: onDeletePressed,
+      onStopPressed: onStopPressed,
+      recordingState: RecordingState.paused,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return switch (recordingState) {
-      RecordingState.non => TextButton(
+      RecordingState.none => TextButton(
           onPressed: onRecordPressed,
           child: Icon(
             Icons.radio_button_checked_rounded,
@@ -68,6 +73,31 @@ class RecordingButtons extends StatelessWidget {
                 onPressed: onPausePressed,
                 child: Icon(
                   Icons.pause_circle_outline_rounded,
+                  color: Colors.black12,
+                  size: 46,
+                )),
+            TextButton(
+                onPressed: onStopPressed,
+                child: Icon(
+                  Icons.stop_circle_outlined,
+                  color: Colors.green,
+                  size: 46,
+                )),
+          ],
+        ),
+      RecordingState.paused => Row(
+          children: [
+            TextButton(
+                onPressed: onDeletePressed,
+                child: Icon(
+                  Icons.delete_outline_rounded,
+                  color: Colors.red,
+                  size: 46,
+                )),
+            TextButton(
+                onPressed: onResumePressed,
+                child: Icon(
+                  Icons.play_arrow_rounded,
                   color: Colors.black12,
                   size: 46,
                 )),
