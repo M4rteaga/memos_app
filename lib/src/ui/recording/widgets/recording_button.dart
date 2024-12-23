@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:memo_app/src/ui/recording/controller/recording_controller.dart';
+
+import '../models/recording_state_enum.dart';
 
 class RecordingButtons extends StatelessWidget {
   const RecordingButtons({
@@ -50,6 +51,9 @@ class RecordingButtons extends StatelessWidget {
     );
   }
 
+  static const double mainIconSize = 56;
+  static const double secondaryIconSize = 42;
+
   @override
   Widget build(BuildContext context) {
     return switch (recordingState) {
@@ -58,55 +62,59 @@ class RecordingButtons extends StatelessWidget {
           child: Icon(
             Icons.radio_button_checked_rounded,
             color: Colors.red,
-            size: 46,
+            size: mainIconSize,
           )),
       RecordingState.recording => Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 24,
           children: [
             TextButton(
                 onPressed: onDeletePressed,
                 child: Icon(
                   Icons.delete_outline_rounded,
                   color: Colors.red,
-                  size: 46,
+                  size: secondaryIconSize,
                 )),
             TextButton(
                 onPressed: onPausePressed,
                 child: Icon(
                   Icons.pause_circle_outline_rounded,
                   color: Colors.black12,
-                  size: 46,
+                  size: mainIconSize,
                 )),
             TextButton(
                 onPressed: onStopPressed,
                 child: Icon(
                   Icons.stop_circle_outlined,
                   color: Colors.green,
-                  size: 46,
+                  size: secondaryIconSize,
                 )),
           ],
         ),
       RecordingState.paused => Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 24,
           children: [
             TextButton(
                 onPressed: onDeletePressed,
                 child: Icon(
                   Icons.delete_outline_rounded,
                   color: Colors.red,
-                  size: 46,
+                  size: secondaryIconSize,
                 )),
             TextButton(
                 onPressed: onResumePressed,
                 child: Icon(
                   Icons.play_arrow_rounded,
                   color: Colors.black12,
-                  size: 46,
+                  size: mainIconSize,
                 )),
             TextButton(
                 onPressed: onStopPressed,
                 child: Icon(
                   Icons.stop_circle_outlined,
                   color: Colors.green,
-                  size: 46,
+                  size: secondaryIconSize,
                 )),
           ],
         ),

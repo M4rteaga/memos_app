@@ -1,23 +1,14 @@
 import 'dart:async';
 
 import 'package:audio_session/audio_session.dart';
+import 'package:memo_app/src/ui/recording/models/recording_model.dart';
 import 'package:record/record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-part 'recording_controller.g.dart';
+import '../models/recording_state_enum.dart';
 
-///Recording screen has 4 basic states
-/// Non in which the screen just shows the initial message
-/// Recording in which the screen start the recording animation and so
-/// Pause, recording stops but the user can continue recording
-/// end, the user ends the recording
-enum RecordingState {
-  none,
-  recording,
-  paused,
-  finish,
-}
+part 'recording_controller.g.dart';
 
 @riverpod
 class RecordingNotifier extends _$RecordingNotifier {
@@ -25,7 +16,7 @@ class RecordingNotifier extends _$RecordingNotifier {
   late PermissionStatus _microphonePermissionStatus;
 
   @override
-  FutureOr<RecordingState> build() async {
+  FutureOr<RecordingModel> build() async {
     _microphonePermissionStatus = await Permission.microphone.request();
 
     _record = AudioRecorder();
@@ -33,7 +24,7 @@ class RecordingNotifier extends _$RecordingNotifier {
 
       await _initializeAudioSession();
     }
-    return RecordingState.none;
+    return RecordingModel(recordingState: RecordingState.none);
   }
 
   Future<void> _initializeAudioSession() async {
@@ -66,19 +57,16 @@ class RecordingNotifier extends _$RecordingNotifier {
         encoder: AudioEncoder.pcm16bits,
       ),
     );
+    // final amplitudStream  = _record.onAmplitudeChanged(Duration(milliseconds: 1));
+    // amplitudStream.listen((amplitud) => print('esta es la amplitud current ${amplitud.current} y max ${amplitud.max}'));
 
-    stream.listen(
-      (event) => print('evento data $event'),
-      onError: (e) => print('este es el error $e'),
-    );
-
-    state = AsyncValue.data(RecordingState.recording);
+    state = AsyncValue.data(RecordingModel(recordingState: RecordingState.recording, recording: stream));
   }
 
   Future<void> pauseRecording() async {
     await _record.pause();
 
-    state = AsyncValue.data(RecordingState.paused);
+state = AsyncValue.data(RecordingModel(recordingState: RecordingState.paused, recording: state.value?.recording));
   }
 
   Future<void> resumeRecording() async {
@@ -86,7 +74,7 @@ class RecordingNotifier extends _$RecordingNotifier {
       await _record.resume();
     }
 
-    state = AsyncValue.data(RecordingState.recording);
+state = AsyncValue.data(RecordingModel(recordingState: RecordingState.recording, recording: state.value?.recording));
   }
 
   Future<void> stopRecording() async {
@@ -95,6 +83,6 @@ class RecordingNotifier extends _$RecordingNotifier {
     await _record.dispose();
 
     print("este es el nose $nose");
-    state = AsyncValue.data(RecordingState.none);
+state = AsyncValue.data(RecordingModel(recordingState: RecordingState.none, recording: null));
   }
 }
