@@ -23,7 +23,7 @@ class RecordingTaskBar extends ConsumerWidget {
                   ref.read(recordingNotifierProvider.notifier).pauseRecording(),
               onDeletePressed: () => {}, //TODO: add method
               onStopPressed: () =>
-                  ref.read(recordingNotifierProvider.notifier).stopRecording(),
+                  ref.read(recordingNotifierProvider.notifier).endRecording(),
             ),
           RecordingState.paused => RecordingButtons.paused(
               onResumePressed: () => ref
@@ -31,9 +31,9 @@ class RecordingTaskBar extends ConsumerWidget {
                   .resumeRecording(),
               onDeletePressed: () => ref
                   .read(recordingNotifierProvider.notifier)
-                  .stopRecording(), //TODO: add method
+                  .endRecording(), //TODO: add method
               onStopPressed: () =>
-                  ref.read(recordingNotifierProvider.notifier).stopRecording(),
+                  ref.read(recordingNotifierProvider.notifier).endRecording(),
             ),
           _ => SizedBox(),
         },
