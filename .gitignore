@@ -85,3 +85,6 @@ app.*.map.json
 **/android/key.properties
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
+
+##gcs
+assets/service_account.json

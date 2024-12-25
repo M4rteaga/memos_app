@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/foundation.dart';
+import 'package:memo_app/src/helpers/wav_file_heper.dart';
+import 'package:memo_app/src/repository/memo_api.dart';
 import 'package:memo_app/src/ui/recording/models/recording_model.dart';
 import 'package:record/record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,15 +16,17 @@ part 'recording_controller.g.dart';
 @riverpod
 class RecordingNotifier extends _$RecordingNotifier {
   late AudioRecorder _record;
-  late PermissionStatus _microphonePermissionStatus;
+  final List<Uint8List> _dataBuffer = [];
+  final _recordingConfig = RecordConfig(
+    encoder: AudioEncoder.pcm16bits,
+  );
 
   @override
   FutureOr<RecordingModel> build() async {
-    _microphonePermissionStatus = await Permission.microphone.request();
+    final microphonePermissionStatus = await Permission.microphone.request();
 
     _record = AudioRecorder();
-    if (_microphonePermissionStatus.isGranted) {
-
+    if (microphonePermissionStatus.isGranted) {
       await _initializeAudioSession();
     }
     return RecordingModel(recordingState: RecordingState.none);
@@ -29,6 +34,7 @@ class RecordingNotifier extends _$RecordingNotifier {
 
   Future<void> _initializeAudioSession() async {
     final session = await AudioSession.instance;
+
     ///Necessary config for recording on iOS devices
     await session.configure(
       AudioSessionConfiguration(
@@ -52,37 +58,58 @@ class RecordingNotifier extends _$RecordingNotifier {
   }
 
   Future<void> startRecording() async {
-    final stream = await _record.startStream(
-      const RecordConfig(
-        encoder: AudioEncoder.pcm16bits,
-      ),
-    );
-    // final amplitudStream  = _record.onAmplitudeChanged(Duration(milliseconds: 1));
-    // amplitudStream.listen((amplitud) => print('esta es la amplitud current ${amplitud.current} y max ${amplitud.max}'));
+    final stream = await _record.startStream(_recordingConfig);
 
-    state = AsyncValue.data(RecordingModel(recordingState: RecordingState.recording, recording: stream));
+    stream.listen((data) => _dataBuffer.add(data));
+
+    state = AsyncValue.data(RecordingModel(
+        recordingState: RecordingState.recording, recording: stream));
   }
 
   Future<void> pauseRecording() async {
     await _record.pause();
 
-state = AsyncValue.data(RecordingModel(recordingState: RecordingState.paused, recording: state.value?.recording));
+    state = AsyncValue.data(
+      RecordingModel(
+        recordingState: RecordingState.paused,
+        recording: state.value?.recording,
+      ),
+    );
   }
 
   Future<void> resumeRecording() async {
-    if(await _record.isPaused()){
+    if (await _record.isPaused()) {
       await _record.resume();
     }
 
-state = AsyncValue.data(RecordingModel(recordingState: RecordingState.recording, recording: state.value?.recording));
+    state = AsyncValue.data(
+      RecordingModel(
+        recordingState: RecordingState.recording,
+        recording: state.value?.recording,
+      ),
+    );
   }
 
-  Future<void> stopRecording() async {
-    final nose = await _record.stop();
-    
-    await _record.dispose();
+  Future<void> endRecording() async {
+    await _record.stop();
 
-    print("este es el nose $nose");
-state = AsyncValue.data(RecordingModel(recordingState: RecordingState.none, recording: null));
+    state = AsyncValue.data(RecordingModel(
+        recordingState: RecordingState.end, recording: state.value?.recording));
+  }
+
+  Future<void> saveRecording(String customName) async {
+    if (!(await _record.isRecording()) && _dataBuffer.isNotEmpty) {
+      final wavData = await WAVFileHelper.pcmToWav(
+        pcmDataList: _dataBuffer,
+        channels: _recordingConfig.numChannels,
+        sampleRate: _recordingConfig.sampleRate,
+      );
+      await MemoApi.saveMemo(wavData, customName: customName);
+    }
+
+    _dataBuffer.clear();
+
+    state = AsyncValue.data(
+        RecordingModel(recordingState: RecordingState.none, recording: null));
   }
 }
