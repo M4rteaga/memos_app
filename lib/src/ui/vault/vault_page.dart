@@ -1,56 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:memo_app/src/ui/vault/notifier/vault_notifier.dart';
+import 'package:memo_app/src/ui/vault/widgets/recording_card.dart';
 
-class VaultPage extends StatelessWidget {
+class VaultPage extends ConsumerWidget {
   const VaultPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncValue = ref.watch(vaultNotifierProvider);
+
     return Scaffold(
-      appBar: AppBar(title: Text('Ideas'),),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                Container(
-                  color: Colors.grey.shade200,
-                  padding: EdgeInsets.all(12),
-                  child: Icon(
-                    Icons.voicemail,
-                    color: Colors.black12,
-                    size: 82,
-                  ),
-                ),
-                SizedBox(
-                  width: 24,
-                ),
-                Container(
-                  child: Icon(
-                    Icons.voicemail,
-                    color: Colors.black12,
-                    size: 82,
-                  ),
-                ),
-                SizedBox(
-                  width: 24,
-                ),
-                Container(
-                  child: Icon(
-                    Icons.voicemail,
-                    color: Colors.black12,
-                    size: 82,
-                  ),
-                ),
-              ]),
-            ),
-          ],
+        appBar: AppBar(
+          title: Text('Ideas'),
         ),
-      ),
-    );
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
+          child: switch (asyncValue) {
+            AsyncData(:final value) => GridView.count(
+                crossAxisCount: 2,
+                children: List.generate(
+                    value.length, (i) => RecordingCard(data: value[i])),
+              ),
+            AsyncLoading() => Center(
+                child: CircularProgressIndicator(),
+              ),
+            _ => SizedBox(),
+          },
+        ));
   }
 }

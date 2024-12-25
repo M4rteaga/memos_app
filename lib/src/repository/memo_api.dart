@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 
+import '../models/memo_object.dart';
 import 'gcs_api.dart';
 
 class MemoApi {
-  Future<void> getMemos() async {}
+  static Future<List<MemoObject>> getMemos() async {
+    return await GcsApi.listBucketContent();
+  }
 
   static Future<void> saveMemo(
     Uint8List content, {

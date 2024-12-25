@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:googleapis/storage/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
+import 'package:memo_app/src/models/memo_object.dart';
 
 class GcsApi {
   static const _serviceAccountPath = 'assets/service_account.json';
@@ -83,5 +84,45 @@ class GcsApi {
       debugPrint('error garrafal $e');
     }
     return {"etag": ""};
+  }
+
+  static Future<List<MemoObject>> listBucketContent() async {
+    try {
+      final List<MemoObject> memoObjects = [];
+      final AutoRefreshingAuthClient? httpClient =
+          (await _authenticate()).match(
+        (l) => l,
+        (r) => null,
+      );
+
+      if (httpClient == null) {
+        throw Exception('Bad http client');
+      }
+
+      final storageApi = StorageApi(httpClient);
+
+      final resp =
+          await storageApi.objects.list(_bucketName, matchGlob: 'memos/**.wav');
+
+      httpClient.close();
+
+      resp.items?.forEach((o) {
+        if (o.etag != null) {
+          memoObjects.add(
+            MemoObject(
+              id: o.etag ?? '',
+              name: o.name ?? '',
+              size: int.tryParse(o.size ?? '') ?? 0,
+            ),
+          );
+        }
+      });
+
+      return memoObjects;
+    } catch (e) {
+      print("este es el error intentando devolver la lista $e");
+    }
+
+    return [];
   }
 }
