@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:memo_app/src/helpers/wav_file_heper.dart';
-import 'package:memo_app/src/repository/memo_api.dart';
+import 'package:memo_app/src/repository/memos_api.dart';
 import 'package:memo_app/src/ui/recording/models/recording_model.dart';
 import 'package:record/record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -104,7 +104,7 @@ class RecordingNotifier extends _$RecordingNotifier {
         channels: _recordingConfig.numChannels,
         sampleRate: _recordingConfig.sampleRate,
       );
-      await MemoApi.saveMemo(wavData, customName: customName);
+      await MemosApi.saveMemo(wavData, customName: customName);
     }
 
     _dataBuffer.clear();

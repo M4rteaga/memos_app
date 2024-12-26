@@ -70,9 +70,8 @@ class GcsApi {
         _bucketName,
         // uploadOptions: UploadOptions,
         uploadMedia: Media(
-          Stream.fromIterable([content]),
-          content.lengthInBytes,
-        ),
+            Stream.fromIterable([content]), content.lengthInBytes,
+            contentType: 'audio/wav'),
       );
 
       httpClient.close();
@@ -81,7 +80,7 @@ class GcsApi {
         return {"etag": resp.etag ?? ""};
       }
     } catch (e) {
-      debugPrint('error garrafal $e');
+      debugPrint('save to bucket error $e');
     }
     return {"etag": ""};
   }
@@ -107,6 +106,7 @@ class GcsApi {
       httpClient.close();
 
       resp.items?.forEach((o) {
+        print("encoding ${o.contentEncoding} ${o.md5Hash}");
         if (o.etag != null) {
           memoObjects.add(
             MemoObject(
@@ -120,9 +120,41 @@ class GcsApi {
 
       return memoObjects;
     } catch (e) {
-      print("este es el error intentando devolver la lista $e");
+      debugPrint("este es el error intentando devolver la lista $e");
     }
 
     return [];
+  }
+
+  static Future<Stream<List<int>>> getMedia(String fileName) async {
+    try {
+      final List<Uint8List> dataBuffer = [];
+      final AutoRefreshingAuthClient? httpClient =
+          (await _authenticate()).match(
+        (l) => l,
+        (r) => null,
+      );
+
+      if (httpClient == null) {
+        throw Exception('Bad http client');
+      }
+
+      final storageApi = StorageApi(httpClient);
+
+      final resp = await storageApi.objects.get(
+        _bucketName,
+        'memos/$fileName',
+        downloadOptions: DownloadOptions.fullMedia,
+      );
+
+      final media = resp as Media;
+
+      return media.stream;
+
+    } catch (e) {
+      debugPrint("redingmedia $e");
+    }
+
+    return Stream.empty();
   }
 }

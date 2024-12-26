@@ -6,7 +6,7 @@ part of 'recording_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$recordingNotifierHash() => r'fa2026f6ffe708f8537e70d23298af0f57315285';
+String _$recordingNotifierHash() => r'a106faea948acabe0c4c672ba5c5cb5b3fd94077';
 
 /// See also [RecordingNotifier].
 @ProviderFor(RecordingNotifier)
