@@ -5,13 +5,19 @@ import 'package:memo_app/src/ui/vault/widgets/recording_card.dart';
 
 class VaultPage extends ConsumerWidget {
   const VaultPage({super.key});
+  static const path = 'vault';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncValue = ref.watch(vaultNotifierProvider);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Ideas'),
+      appBar:AppBar(
+        backgroundColor: Colors.indigo,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'Ideas',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Padding(
           padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),

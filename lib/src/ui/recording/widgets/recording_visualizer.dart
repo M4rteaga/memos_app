@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:memo_app/src/ui/recording/models/recording_model.dart';
 import 'package:memo_app/src/ui/recording/notifier/recording_controller.dart';
 
 import '../models/recording_state_enum.dart';
@@ -22,7 +21,6 @@ class _RecordingVisualizerState extends ConsumerState<RecordingVisualizer> {
 
   @override
   void initState() {
-    _startAnimating();
     super.initState();
   }
 
@@ -43,17 +41,23 @@ class _RecordingVisualizerState extends ConsumerState<RecordingVisualizer> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(recordingNotifierProvider, (_, next) {
+      if (next.value == RecordingState.recording) {
+        _startAnimating();
+      } else {
+        _timer?.cancel();
+      }
+    });
     final asyncData = ref.watch(recordingNotifierProvider);
-
     return SizedBox(
       height: MediaQuery.sizeOf(context).height * 0.1,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: switch (asyncData) {
-          AsyncData<RecordingModel> state => switch (
-                state.value.recordingState) {
+          AsyncData(:final value) => switch (value) {
               RecordingState.none ||
-              RecordingState.paused =>
+              RecordingState.paused ||
+              RecordingState.end =>
                 _initialHeights.map((height) {
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
@@ -61,7 +65,7 @@ class _RecordingVisualizerState extends ConsumerState<RecordingVisualizer> {
                     height: MediaQuery.sizeOf(context).height * height,
                     margin: const EdgeInsets.only(right: 10),
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                      color: Colors.black12,
                       borderRadius: BorderRadius.circular(50),
                     ),
                   );
@@ -73,46 +77,17 @@ class _RecordingVisualizerState extends ConsumerState<RecordingVisualizer> {
                     height: MediaQuery.sizeOf(context).height * height,
                     margin: const EdgeInsets.only(right: 10),
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                      color: Colors.black12,
                       borderRadius: BorderRadius.circular(50),
                     ),
                   );
                 }).toList() as List<Widget>,
-              _ => [SizedBox()],
             },
-          _ => [SizedBox()],
+          _ => [
+              SizedBox(),
+            ],
         },
       ),
     );
   }
 }
-
-// class NoLoSe extends StatelessWidget {
-//   NoLoSe({super.key, required this.asyncValue});
-//   final AsyncValue<RecordingModel> asyncValue;
-
-//   final List<double> _initialHeights = [0.01, 0.01, 0.01, 0.01, 0.01];
-//   final List<double> _heights = [0.05, 0.07, 0.1, 0.07, 0.05];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return switch (asyncValue) {
-//       AsyncData<RecordingModel> state => switch (state.value.recordingState) {
-//           RecordingState.none => _heights.map((height) {
-//               return AnimatedContainer(
-//                 duration: const Duration(milliseconds: 300),
-//                 width: 20,
-//                 height: MediaQuery.sizeOf(context).height * height,
-//                 margin: const EdgeInsets.only(right: 10),
-//                 decoration: BoxDecoration(
-//                   color: Colors.blue,
-//                   borderRadius: BorderRadius.circular(50),
-//                 ),
-//               );
-//             }).toList() as List<Widget>,
-//           _ => SizedBox(),
-//         },
-//       _ => SizedBox(),
-//     };
-//   }
-// }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:memo_app/src/ui/recording/models/recording_model.dart';
 
 import '../models/recording_state_enum.dart';
 import '../notifier/recording_controller.dart';
@@ -13,8 +12,8 @@ class RecordingTaskBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncState = ref.watch(recordingNotifierProvider);
     return switch (asyncState) {
-      AsyncData<RecordingModel> state => switch (state.value.recordingState) {
-          RecordingState.none => RecordingButtons.record(
+      AsyncData(:final value) => switch (value) {
+          RecordingState.none || RecordingState.end => RecordingButtons.record(
               onRecordPressed: () =>
                   ref.read(recordingNotifierProvider.notifier).startRecording(),
             ),
@@ -35,7 +34,6 @@ class RecordingTaskBar extends ConsumerWidget {
               onStopPressed: () =>
                   ref.read(recordingNotifierProvider.notifier).endRecording(),
             ),
-          _ => SizedBox(),
         },
       _ => SizedBox(),
     };

@@ -23,7 +23,7 @@ class RecordingCard extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: Colors.indigo.shade50,
                 borderRadius: BorderRadius.all(Radius.circular(6))),
             padding: EdgeInsets.all(12),
             child: Icon(
