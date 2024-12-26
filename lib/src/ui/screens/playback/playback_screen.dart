@@ -1,19 +1,20 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:memo_app/src/ui/vault/notifier/read_data_provider.dart';
+import 'package:memo_app/src/ui/screens/vault/notifier/read_data_provider.dart';
 
 import 'widgets/player.dart';
 
-class PlayerScreen extends ConsumerStatefulWidget {
-  const PlayerScreen({super.key, required this.memoName});
+class PlaybackPage extends ConsumerStatefulWidget {
+  const PlaybackPage({super.key, required this.memoName});
   final String memoName;
+  static const path = '/playback';
 
   @override
-  ConsumerState<PlayerScreen> createState() => _PlayerScreenState();
+  ConsumerState<PlaybackPage> createState() => _PlaybackPageState();
 }
 
-class _PlayerScreenState extends ConsumerState<PlayerScreen> {
+class _PlaybackPageState extends ConsumerState<PlaybackPage> {
   late AudioPlayer player = AudioPlayer();
 
   @override
@@ -35,10 +36,14 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
   Widget build(BuildContext context) {
     final asyncValue = ref.watch(ReadDataProviderProvider(widget.memoName));
 
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.memoName),
+        backgroundColor: Colors.indigo,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          widget.memoName,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Center(
           child: switch (asyncValue) {

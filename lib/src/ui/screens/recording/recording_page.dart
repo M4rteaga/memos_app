@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:memo_app/src/ui/recording/models/recording_state_enum.dart';
-import 'package:memo_app/src/ui/recording/notifier/recording_controller.dart';
-import 'package:memo_app/src/ui/recording/widgets/recording_task_bar.dart';
-import 'package:memo_app/src/ui/recording/widgets/recording_visualizer.dart';
+import 'package:memo_app/src/ui/screens/recording/models/recording_state_enum.dart';
+import 'package:memo_app/src/ui/screens/recording/notifier/recording_controller.dart';
+import 'package:memo_app/src/ui/screens/recording/widgets/recording_task_bar.dart';
+import 'package:memo_app/src/ui/screens/recording/widgets/recording_visualizer.dart';
 
 class RecordingPage extends ConsumerStatefulWidget {
   const RecordingPage({super.key});
-  static const path = 'recording';
+  static const path = '/recording';
 
   @override
   ConsumerState<RecordingPage> createState() => _RecordingPageState();

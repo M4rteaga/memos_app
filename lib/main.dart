@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memo_app/src/routes/routes.dart';
+import 'package:memo_app/src/ui/screens/playback/playback_screen.dart';
 
 import 'src/logger.dart';
-import 'src/ui/recording/recording_page.dart';
-import 'src/ui/home/home_page.dart';
-import 'src/ui/vault/vault_page.dart';
+import 'src/ui/screens/recording/recording_page.dart';
+import 'src/ui/screens/vault/vault_page.dart';
 
 void main() {
   runApp(
@@ -29,8 +29,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': Routes.goToHomePage,
-        RecordingPage.path: Routes.goToRecordingPage,
-        VaultPage.path: Routes.goToVaultPage
+        RecordingPage.path: Routes.recordingPageWidget,
+        VaultPage.path: Routes.vaultPageWidget,
+        PlaybackPage.path: Routes.playbackWidget,
       },
     );
   }

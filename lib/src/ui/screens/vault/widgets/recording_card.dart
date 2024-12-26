@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:memo_app/src/models/memo_object.dart';
-import 'package:memo_app/src/ui/vault/player_screen.dart';
 
 class RecordingCard extends StatelessWidget {
-  const RecordingCard({super.key, required this.data, this.onClick});
+  const RecordingCard({super.key, required this.data, this.onTap});
   final MemoObject data;
-  final VoidCallback? onClick;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PlayerScreen(memoName: data.name),
-          ),
-          ModalRoute.withName('payer_screen'),
-        );
-      },
+      onTap: () => onTap?.call(),
       child: Column(
         children: [
           Container(

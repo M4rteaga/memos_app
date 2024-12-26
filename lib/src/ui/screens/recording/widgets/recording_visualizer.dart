@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:memo_app/src/ui/recording/notifier/recording_controller.dart';
+import 'package:memo_app/src/ui/screens/recording/notifier/recording_controller.dart';
 
 import '../models/recording_state_enum.dart';
 
