@@ -6,7 +6,7 @@ part of 'vault_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$vaultNotifierHash() => r'93954d8d20cefdb2d58654517aebf0e4f128c1f9';
+String _$vaultNotifierHash() => r'da637ecaf1affd5f187a824f0d9ac448240bb78a';
 
 /// See also [VaultNotifier].
 @ProviderFor(VaultNotifier)
