@@ -1,6 +1,8 @@
 enum RecordingState {
-  none, 
+  none,
   recording,
   paused,
   end,
+  uploading,
+  susccesfulyUpload,
 }

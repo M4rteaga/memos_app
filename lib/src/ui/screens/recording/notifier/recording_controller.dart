@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
-import 'package:memo_app/src/helpers/wav_file_heper.dart';
+import 'package:memo_app/src/utils/wav_file_heper.dart';
 import 'package:memo_app/src/repository/memos_api.dart';
-import 'package:memo_app/src/ui/recording/models/recording_model.dart';
 import 'package:record/record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,14 +21,18 @@ class RecordingNotifier extends _$RecordingNotifier {
   );
 
   @override
-  FutureOr<RecordingModel> build() async {
+  FutureOr<RecordingState> build() async {
     final microphonePermissionStatus = await Permission.microphone.request();
 
     _record = AudioRecorder();
     if (microphonePermissionStatus.isGranted) {
       await _initializeAudioSession();
     }
-    return RecordingModel(recordingState: RecordingState.none);
+
+    ref.onDispose(() async {
+      await _record.dispose();
+    });
+    return RecordingState.none;
   }
 
   Future<void> _initializeAudioSession() async {
@@ -62,19 +65,13 @@ class RecordingNotifier extends _$RecordingNotifier {
 
     stream.listen((data) => _dataBuffer.add(data));
 
-    state = AsyncValue.data(RecordingModel(
-        recordingState: RecordingState.recording, recording: stream));
+    state = AsyncValue.data(RecordingState.recording);
   }
 
   Future<void> pauseRecording() async {
     await _record.pause();
 
-    state = AsyncValue.data(
-      RecordingModel(
-        recordingState: RecordingState.paused,
-        recording: state.value?.recording,
-      ),
-    );
+    state = AsyncValue.data(RecordingState.paused);
   }
 
   Future<void> resumeRecording() async {
@@ -82,22 +79,17 @@ class RecordingNotifier extends _$RecordingNotifier {
       await _record.resume();
     }
 
-    state = AsyncValue.data(
-      RecordingModel(
-        recordingState: RecordingState.recording,
-        recording: state.value?.recording,
-      ),
-    );
+    state = AsyncValue.data(RecordingState.recording);
   }
 
   Future<void> endRecording() async {
     await _record.stop();
 
-    state = AsyncValue.data(RecordingModel(
-        recordingState: RecordingState.end, recording: state.value?.recording));
+    state = AsyncValue.data(RecordingState.end);
   }
 
   Future<void> saveRecording(String customName) async {
+    state = AsyncValue.data(RecordingState.uploading);
     if (!(await _record.isRecording()) && _dataBuffer.isNotEmpty) {
       final wavData = await WAVFileHelper.pcmToWav(
         pcmDataList: _dataBuffer,
@@ -107,9 +99,14 @@ class RecordingNotifier extends _$RecordingNotifier {
       await MemosApi.saveMemo(wavData, customName: customName);
     }
 
+    state = AsyncValue.data(RecordingState.susccesfulyUpload);
+  }
+
+  Future<void> discardRecording() async {
+    await _record.cancel();
+
     _dataBuffer.clear();
 
-    state = AsyncValue.data(
-        RecordingModel(recordingState: RecordingState.none, recording: null));
+    state = AsyncValue.data(RecordingState.none);
   }
 }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:memo_app/src/helpers/utils.dart';
+import 'package:memo_app/src/utils/utils.dart';
 
 class PlayerWidget extends StatefulWidget {
   final AudioPlayer player;

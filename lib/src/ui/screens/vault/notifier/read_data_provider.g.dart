@@ -6,7 +6,7 @@ part of 'read_data_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$readDataProviderHash() => r'b7ffe52227a48b04c4024b53bc5f66acc0ac7b8a';
+String _$readDataProviderHash() => r'd06b5f089db9975d0603804584a8c436164938e7';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -34,7 +34,8 @@ class _SystemHash {
 const readDataProviderProvider = ReadDataProviderFamily();
 
 /// See also [readDataProvider].
-class ReadDataProviderFamily extends Family<AsyncValue<Stream<List<int>>>> {
+class ReadDataProviderFamily extends Family<
+    AsyncValue<Either<Stream<List<int>>, CustomMemosException>>> {
   /// See also [readDataProvider].
   const ReadDataProviderFamily();
 
@@ -72,8 +73,8 @@ class ReadDataProviderFamily extends Family<AsyncValue<Stream<List<int>>>> {
 }
 
 /// See also [readDataProvider].
-class ReadDataProviderProvider
-    extends AutoDisposeFutureProvider<Stream<List<int>>> {
+class ReadDataProviderProvider extends AutoDisposeFutureProvider<
+    Either<Stream<List<int>>, CustomMemosException>> {
   /// See also [readDataProvider].
   ReadDataProviderProvider(
     String fileName,
@@ -108,7 +109,9 @@ class ReadDataProviderProvider
 
   @override
   Override overrideWith(
-    FutureOr<Stream<List<int>>> Function(ReadDataProviderRef provider) create,
+    FutureOr<Either<Stream<List<int>>, CustomMemosException>> Function(
+            ReadDataProviderRef provider)
+        create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -125,7 +128,8 @@ class ReadDataProviderProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<Stream<List<int>>> createElement() {
+  AutoDisposeFutureProviderElement<
+      Either<Stream<List<int>>, CustomMemosException>> createElement() {
     return _ReadDataProviderProviderElement(this);
   }
 
@@ -145,14 +149,14 @@ class ReadDataProviderProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ReadDataProviderRef on AutoDisposeFutureProviderRef<Stream<List<int>>> {
+mixin ReadDataProviderRef on AutoDisposeFutureProviderRef<
+    Either<Stream<List<int>>, CustomMemosException>> {
   /// The parameter `fileName` of this provider.
   String get fileName;
 }
 
-class _ReadDataProviderProviderElement
-    extends AutoDisposeFutureProviderElement<Stream<List<int>>>
-    with ReadDataProviderRef {
+class _ReadDataProviderProviderElement extends AutoDisposeFutureProviderElement<
+    Either<Stream<List<int>>, CustomMemosException>> with ReadDataProviderRef {
   _ReadDataProviderProviderElement(super.provider);
 
   @override

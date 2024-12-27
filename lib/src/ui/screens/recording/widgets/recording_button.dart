@@ -86,7 +86,7 @@ class RecordingButtons extends StatelessWidget {
                 onPressed: onStopPressed,
                 child: Icon(
                   Icons.stop_circle_outlined,
-                  color: Colors.green,
+                  color: Colors.indigo,
                   size: secondaryIconSize,
                 )),
           ],
@@ -113,7 +113,7 @@ class RecordingButtons extends StatelessWidget {
                 onPressed: onStopPressed,
                 child: Icon(
                   Icons.stop_circle_outlined,
-                  color: Colors.green,
+                  color: Colors.indigo,
                   size: secondaryIconSize,
                 )),
           ],

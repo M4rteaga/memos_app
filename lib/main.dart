@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:memo_app/src/routes/routes.dart';
+import 'package:memo_app/src/ui/screens/playback/playback_screen.dart';
 
 import 'src/logger.dart';
-import 'src/ui/recording/recording_page.dart';
-import 'src/ui/home/home_page.dart';
-import 'src/ui/vault/vault_page.dart';
+import 'src/ui/screens/recording/recording_page.dart';
+import 'src/ui/screens/vault/vault_page.dart';
 
 void main() {
   runApp(
@@ -21,15 +22,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Memo App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
       routes: {
-        '/': (BuildContext context) => HomePage(),
-        '/create': (BuildContext context) => RecordingPage(),
-        '/ideas': (BuildContext context) => VaultPage()
+        '/': Routes.goToHomePage,
+        RecordingPage.path: Routes.recordingPageWidget,
+        VaultPage.path: Routes.vaultPageWidget,
+        PlaybackPage.path: Routes.playbackWidget,
       },
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:googleapis/storage/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
+import 'package:memo_app/src/models/exceptions.dart';
 import 'package:memo_app/src/models/memo_object.dart';
 
 class GcsApi {
@@ -35,11 +36,12 @@ class GcsApi {
           credentials, [StorageApi.devstorageReadWriteScope]));
     } catch (e) {
       debugPrint('Error authenticating $e');
-      return Right(e as Exception);
+      return Right(CustomMemosException.authenticationException());
     }
   }
 
-  static Future<Map<String, dynamic>> saveToBucket(
+  static Future<Either<Map<String, dynamic>, CustomMemosException>>
+      saveToBucket(
     Uint8List content, {
     String? bucketName,
     String? fileName,
@@ -77,15 +79,18 @@ class GcsApi {
       httpClient.close();
 
       if (resp.id != null && resp.id!.isNotEmpty) {
-        return {"etag": resp.etag ?? ""};
+        return Left({"etag": resp.etag ?? ""});
       }
-    } catch (e) {
-      debugPrint('save to bucket error $e');
+
+      return Right(CustomMemosException.uploadingException());
+    } on Exception catch (e) {
+      debugPrint('Uploading exceptin $e');
+      return Right(CustomMemosException.uploadingException());
     }
-    return {"etag": ""};
   }
 
-  static Future<List<MemoObject>> listBucketContent() async {
+  static Future<Either<List<MemoObject>, CustomMemosException>>
+      listBucketContent() async {
     try {
       final List<MemoObject> memoObjects = [];
       final AutoRefreshingAuthClient? httpClient =
@@ -106,7 +111,6 @@ class GcsApi {
       httpClient.close();
 
       resp.items?.forEach((o) {
-        print("encoding ${o.contentEncoding} ${o.md5Hash}");
         if (o.etag != null) {
           memoObjects.add(
             MemoObject(
@@ -118,17 +122,20 @@ class GcsApi {
         }
       });
 
-      return memoObjects;
-    } catch (e) {
-      debugPrint("este es el error intentando devolver la lista $e");
-    }
+      if (memoObjects.isNotEmpty) {
+        return Left(memoObjects);
+      }
 
-    return [];
+      return Right(CustomMemosException.emptyRecordsException());
+    } on Exception catch (e) {
+      debugPrint("Retriving bucket objects exception $e");
+      return Right(CustomMemosException.listBucketContentException());
+    }
   }
 
-  static Future<Stream<List<int>>> getMedia(String fileName) async {
+  static Future<Either<Stream<List<int>>, CustomMemosException>> getMedia(
+      String fileName) async {
     try {
-      final List<Uint8List> dataBuffer = [];
       final AutoRefreshingAuthClient? httpClient =
           (await _authenticate()).match(
         (l) => l,
@@ -141,20 +148,18 @@ class GcsApi {
 
       final storageApi = StorageApi(httpClient);
 
-      final resp = await storageApi.objects.get(
+      final media = await storageApi.objects.get(
         _bucketName,
         'memos/$fileName',
         downloadOptions: DownloadOptions.fullMedia,
-      );
+      ) as Media;
 
-      final media = resp as Media;
+      final stream = media.stream;
 
-      return media.stream;
-
-    } catch (e) {
-      debugPrint("redingmedia $e");
+      return Left(stream);
+    } on Exception catch (e) {
+      debugPrint("media exception $e");
+      return Right(CustomMemosException.mediaException());
     }
-
-    return Stream.empty();
   }
 }
