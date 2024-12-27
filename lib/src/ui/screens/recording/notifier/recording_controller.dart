@@ -22,13 +22,16 @@ class RecordingNotifier extends _$RecordingNotifier {
 
   @override
   FutureOr<RecordingState> build() async {
-    print("esto cuantas veces se llama???");
     final microphonePermissionStatus = await Permission.microphone.request();
 
     _record = AudioRecorder();
     if (microphonePermissionStatus.isGranted) {
       await _initializeAudioSession();
     }
+
+    ref.onDispose(() async {
+      await _record.dispose();
+    });
     return RecordingState.none;
   }
 
@@ -86,6 +89,7 @@ class RecordingNotifier extends _$RecordingNotifier {
   }
 
   Future<void> saveRecording(String customName) async {
+    state = AsyncValue.data(RecordingState.uploading);
     if (!(await _record.isRecording()) && _dataBuffer.isNotEmpty) {
       final wavData = await WAVFileHelper.pcmToWav(
         pcmDataList: _dataBuffer,
@@ -95,15 +99,14 @@ class RecordingNotifier extends _$RecordingNotifier {
       await MemosApi.saveMemo(wavData, customName: customName);
     }
 
+    state = AsyncValue.data(RecordingState.susccesfulyUpload);
+  }
+
+  Future<void> discardRecording() async {
+    await _record.cancel();
+
     _dataBuffer.clear();
 
     state = AsyncValue.data(RecordingState.none);
-  }
-
-  Future<void> discardRecording() async{
-    await _record.cancel();
-    await _record.dispose();
-
-    _dataBuffer.clear();
   }
 }

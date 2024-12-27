@@ -55,10 +55,7 @@ class _RecordingVisualizerState extends ConsumerState<RecordingVisualizer> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: switch (asyncData) {
           AsyncData(:final value) => switch (value) {
-              RecordingState.none ||
-              RecordingState.paused ||
-              RecordingState.end =>
-                _initialHeights.map((height) {
+              RecordingState.recording => _heights.map((height) {
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     width: 20,
@@ -70,7 +67,7 @@ class _RecordingVisualizerState extends ConsumerState<RecordingVisualizer> {
                     ),
                   );
                 }).toList() as List<Widget>,
-              RecordingState.recording => _heights.map((height) {
+              _ => _initialHeights.map((height) {
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     width: 20,

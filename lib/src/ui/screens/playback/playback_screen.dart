@@ -1,8 +1,11 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:memo_app/src/ui/common/error_widget.dart';
 import 'package:memo_app/src/ui/screens/vault/notifier/read_data_provider.dart';
 
+import '../../../models/exceptions.dart';
 import 'widgets/player.dart';
 
 class PlaybackPage extends ConsumerStatefulWidget {
@@ -45,15 +48,25 @@ class _PlaybackPageState extends ConsumerState<PlaybackPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Center(
-          child: switch (asyncValue) {
-        AsyncData(:final value) => PlayerWidget(
-            player: player,
-            mediaData: value,
-          ),
-        AsyncLoading() => CircularProgressIndicator(),
-        _ => SizedBox(),
-      }),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
+        child: Center(
+            child: switch (asyncValue) {
+          AsyncData(:final value) => _handleData(context, value),
+          AsyncLoading() => CircularProgressIndicator(),
+          _ => SizedBox(),
+        }),
+      ),
+    );
+  }
+
+  _handleData(BuildContext context, Either<Stream<List<int>>, CustomMemosException> data) {
+    return data.match(
+      (value) => PlayerWidget(
+        player: player,
+        mediaData: value,
+      ),
+      (e) => CustomErrorWidget(exception: e),
     );
   }
 }

@@ -8,14 +8,11 @@ import 'recording_button.dart';
 class RecordingTaskBar extends ConsumerWidget {
   const RecordingTaskBar({super.key});
 
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncState = ref.watch(recordingNotifierProvider);
     return switch (asyncState) {
       AsyncData(:final value) => switch (value) {
-          RecordingState.none || RecordingState.end => RecordingButtons.record(
-              onRecordPressed: () =>
-                  ref.read(recordingNotifierProvider.notifier).startRecording(),
-            ),
           RecordingState.recording => RecordingButtons.recording(
               onPausePressed: () =>
                   ref.read(recordingNotifierProvider.notifier).pauseRecording(),
@@ -34,6 +31,10 @@ class RecordingTaskBar extends ConsumerWidget {
                   .discardRecording(),
               onStopPressed: () =>
                   ref.read(recordingNotifierProvider.notifier).endRecording(),
+            ),
+          _ => RecordingButtons.record(
+              onRecordPressed: () =>
+                  ref.read(recordingNotifierProvider.notifier).startRecording(),
             ),
         },
       _ => SizedBox(),
