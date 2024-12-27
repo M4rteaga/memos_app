@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:memo_app/src/ui/common/error_widget.dart';
+import 'package:memo_app/src/ui/common/memos_app_bar.dart';
 import 'package:memo_app/src/ui/screens/vault/notifier/read_data_provider.dart';
 
 import '../../../models/exceptions.dart';
@@ -40,14 +41,7 @@ class _PlaybackPageState extends ConsumerState<PlaybackPage> {
     final asyncValue = ref.watch(ReadDataProviderProvider(widget.memoName));
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          widget.memoName,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      appBar: MemosAppBar(title: widget.memoName),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
         child: Center(
@@ -60,7 +54,8 @@ class _PlaybackPageState extends ConsumerState<PlaybackPage> {
     );
   }
 
-  _handleData(BuildContext context, Either<Stream<List<int>>, CustomMemosException> data) {
+  _handleData(BuildContext context,
+      Either<Stream<List<int>>, CustomMemosException> data) {
     return data.match(
       (value) => PlayerWidget(
         player: player,

@@ -14,6 +14,26 @@ class RecordingDialog extends ConsumerStatefulWidget {
 
 class _RecordingDialogState extends ConsumerState<RecordingDialog> {
   final modalInputController = TextEditingController();
+  bool isSaveButtonEnable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    modalInputController.addListener(() {
+      if (modalInputController.text.length > 3) {
+        setState(() {
+          isSaveButtonEnable = true;
+        });
+      }
+
+      if (modalInputController.text.length < 3) {
+        setState(() {
+          isSaveButtonEnable = false;
+        });
+      }
+    });
+  }
+
   @override
   void dispose() {
     modalInputController.dispose();
@@ -80,11 +100,17 @@ class _RecordingDialogState extends ConsumerState<RecordingDialog> {
                                 )),
                             TextButton(
                                 style: ButtonStyle(
-                                    backgroundColor:
-                                        WidgetStatePropertyAll(Colors.indigo)),
-                                onPressed: () => ref
-                                    .read(recordingNotifierProvider.notifier)
-                                    .saveRecording(modalInputController.text),
+                                    backgroundColor: WidgetStatePropertyAll(
+                                        isSaveButtonEnable
+                                            ? Colors.indigo
+                                            : Colors.indigo.shade100)),
+                                onPressed: () => isSaveButtonEnable
+                                    ? ref
+                                        .read(
+                                            recordingNotifierProvider.notifier)
+                                        .saveRecording(
+                                            modalInputController.text)
+                                    : null,
                                 child: Text(
                                   'Save',
                                   style: TextStyle(color: Colors.white),

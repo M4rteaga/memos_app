@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:memo_app/src/ui/common/memos_app_bar.dart';
 import 'package:memo_app/src/ui/screens/recording/models/recording_state_enum.dart';
 import 'package:memo_app/src/ui/screens/recording/notifier/recording_controller.dart';
 import 'package:memo_app/src/ui/screens/recording/widgets/recording_task_bar.dart';
@@ -31,14 +32,7 @@ class _RecordingPageState extends ConsumerState<RecordingPage> {
       }
     });
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          'Record your idea',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      appBar: MemosAppBar(title: 'Record your idea'),
       body: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Stack(alignment: Alignment.bottomCenter, children: [

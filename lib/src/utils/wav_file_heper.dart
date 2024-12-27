@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 class WAVFileHelper {
   ///this method adds the corresponding headers to transform pcm info to wav format
-  ///
   static Future<Uint8List> pcmToWav({
     required List<Uint8List> pcmDataList,
     int sampleRate = 44100,
