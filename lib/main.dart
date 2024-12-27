@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memo_app/src/routes/routes.dart';
-import 'package:memo_app/src/ui/screens/playback/playback_screen.dart';
+import 'package:memo_app/src/ui/screens/playback/playback_page.dart';
 
 import 'src/logger.dart';
 import 'src/ui/screens/recording/recording_page.dart';

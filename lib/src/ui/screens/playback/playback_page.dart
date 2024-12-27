@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:memo_app/src/ui/common/error_widget.dart';
 import 'package:memo_app/src/ui/common/memos_app_bar.dart';
-import 'package:memo_app/src/ui/screens/vault/notifier/read_data_provider.dart';
+import 'package:memo_app/src/ui/screens/playback/notifier/read_data_provider.dart';
 
 import '../../../models/exceptions.dart';
 import 'widgets/player.dart';

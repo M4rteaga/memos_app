@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memo_app/src/ui/screens/home/home_page.dart';
-import 'package:memo_app/src/ui/screens/playback/playback_screen.dart';
+import 'package:memo_app/src/ui/screens/playback/playback_page.dart';
 import 'package:memo_app/src/ui/screens/recording/recording_page.dart';
 import 'package:memo_app/src/ui/screens/vault/vault_page.dart';
 
